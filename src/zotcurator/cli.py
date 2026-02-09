@@ -63,17 +63,42 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # zotc collections ...
-    collections_parser = subparsers.add_parser(
-        "collections", help="Manage Zotero collections"
+    # collections_parser = subparsers.add_parser(
+    #     "collections", help="Manage Zotero collections"
+    # )
+    # collections_sub = collections_parser.add_subparsers(
+    #     dest="collections_command", help="Collection subcommands"
+    # )
+    # from zotcurator.commands.collections_list import (
+    #     register as register_collections_list,
+    # )
+    #
+    # register_collections_list(collections_sub)
+
+
+
+    # zotc collection ...
+    collection_parser = subparsers.add_parser(
+        "collection", help="List, create, modify, or diff collections"
     )
-    collections_sub = collections_parser.add_subparsers(
-        dest="collections_command", help="Collection subcommands"
+    collection_sub = collection_parser.add_subparsers(
+        dest="collection_command", help="Collection management subcommands"
     )
     from zotcurator.commands.collections_list import (
         register as register_collections_list,
     )
+    from zotcurator.commands.collection_manage import (
+        register_add,
+        register_create,
+        register_diff,
+        register_replace,
+    )
 
-    register_collections_list(collections_sub)
+    register_collections_list(collection_sub)
+    register_create(collection_sub)
+    register_add(collection_sub)
+    register_replace(collection_sub)
+    register_diff(collection_sub)
 
     # zotc keys ...
     keys_parser = subparsers.add_parser("keys", help="Citation key operations")
@@ -86,24 +111,6 @@ def build_parser() -> argparse.ArgumentParser:
     register_keys_extract(keys_sub)
     register_keys_list(keys_sub)
 
-    # zotc collection ...
-    collection_parser = subparsers.add_parser(
-        "collection", help="Create, modify, or diff a single collection"
-    )
-    collection_sub = collection_parser.add_subparsers(
-        dest="collection_command", help="Collection management subcommands"
-    )
-    from zotcurator.commands.collection_manage import (
-        register_add,
-        register_create,
-        register_diff,
-        register_replace,
-    )
-
-    register_create(collection_sub)
-    register_add(collection_sub)
-    register_replace(collection_sub)
-    register_diff(collection_sub)
 
     return parser
 
