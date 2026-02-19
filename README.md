@@ -214,6 +214,7 @@ zotc -vvv ...    # debug: full API URLs, request bodies, SQL query results
 - [Configuration](#configuration)
 - [Core Concepts](#core-concepts)
 - [Command Reference](#command-reference)
+  - [`config`](#config)
   - [`keys list`](#keys-list)
   - [`keys extract`](#keys-extract)
   - [`collection list`](#collection-list)
@@ -277,8 +278,10 @@ This installs the `zotc` command.
 `zotc` resolves configuration in this priority order:
 
 ```
-CLI flags  >  environment variables  >  .zotc/ config files  >  defaults
+CLI flags  >  environment variables  >  .zotc/ config files  >  auto-detection  >  defaults
 ```
+
+On a standard Zotero install, the **BetterBibTeX database path** and **library ID** are auto-detected from your local Zotero data directory — you may not need to specify them at all. Run `zotc config` to see what was found.
 
 ### CLI flags
 
@@ -319,6 +322,10 @@ Once your credentials are in `~/.zotc/`, you only need `-b` to point at the Bett
 ```bash
 zotc -b ~/Zotero/better-bibtex.sqlite collection create "Reading/2024" paper.qmd --execute
 ```
+
+### Auto-detection
+
+`zotc` will attempt to auto-detect the BetterBibTeX database path and your Zotero library ID from your local Zotero installation. Run `zotc config` to verify what was found before your first use. If detection works, you only need to supply your API key.
 
 ### Finding your BetterBibTeX database
 
@@ -379,6 +386,31 @@ zotc [-i LIBRARY_ID] [-k API_KEY] [--library-type {user,group}]
 | `-v` | Warnings only |
 | (default) | Info messages |
 | `-vvv` | Debug — prints full API requests/responses |
+
+---
+
+### `config`
+
+Show the fully resolved configuration and indicate which values were auto-detected from your local Zotero installation.
+
+```
+zotc [-i LIBRARY_ID] [-k API_KEY] [-b BBT_DB] config
+```
+
+```bash
+zotc config
+```
+
+**Example output:**
+```
+  Library ID       1234567  [auto-detected]
+  API key          (not set)
+  Library type     user
+  BetterBibTeX DB  /home/jeet/Zotero/better-bibtex.sqlite  [auto-detected]
+  Zotero data dir  /home/jeet/Zotero  [auto-detected]
+```
+
+Auto-detected values are read from your local Zotero SQLite database and the OS-default Zotero data directory. The API key is never auto-detected and must always be supplied.
 
 ---
 
