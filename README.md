@@ -4,7 +4,7 @@
 
 `zotc` bridges your documents and your Zotero library. It reads citation keys from any file you're working in — a Quarto manuscript, a BibTeX export, a reading list CSV — and uses those keys to create, populate, or synchronize Zotero collections. The critical link is your local [BetterBibTeX](https://retorque.re/zotero-better-bibtex/) SQLite database, which maps the human-readable citation keys you write (e.g., `Smith2023evolution`) to the internal item keys the Zotero API expects (e.g., `X4K2MNPQ`).
 
-## Summary
+## Overview
 
 ### What is Zotcurate?
 
