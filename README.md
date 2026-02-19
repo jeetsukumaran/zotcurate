@@ -14,6 +14,196 @@ Zotcurate is a command-line tool for creating, populating, and synchronizing Zot
 
 Zotcurate fills a major gap in Zotero workflows: there are many tools for getting references out of Zotero, into Obsidian via Zotero Integration, ZotLit or [Bibliosidian](https://github.com/jeetsukumaran/obsidian-bibliosidian) for example, but not much that goes the other way. The citations you actually used in a manuscript, the annotated bibliography or reading list you refined in Obsidian, the thematic grouping that emerged after months of note-taking: these are the intellectual output of working with your references, and they belong back in Zotero as proper collections. `zotc` is that return path. (See (Motivation)[MOTIVATION.md] for more details.)
 
+## Example usage
+
+```
+# ── Finding your credentials ───────────────────────────────────────────────────
+
+# LIBRARY ID and API KEY
+# Go to https://www.zotero.org/settings/keys
+# Your numeric library ID is shown at the top of the page ("Your userID for use
+# in API calls is 1234567"). Create a new API key with library read/write access.
+
+# BETTERBIBTEX DATABASE
+# The BBT SQLite database lives inside your Zotero data directory.
+# Find it via: Zotero → Edit → Preferences → Advanced → Files and Folders → Data Directory
+# Default locations:
+#   macOS:   ~/Library/Application Support/Zotero/better-bibtex.sqlite
+#   Linux:   ~/.zotero/zotero/<profile>/better-bibtex.sqlite
+#   Windows: %APPDATA%\Zotero\Zotero\better-bibtex.sqlite
+
+
+# ── Passing credentials on the command line ────────────────────────────────────
+
+zotc \
+  --library-id  1234567 \
+  --api-key     abc123XYZyourAPIkeyhere \
+  --better-bibtex ~/Library/Application\ Support/Zotero/better-bibtex.sqlite \
+  collection create "Reading/2024" paper.qmd --execute
+
+# Short flags
+zotc \
+  -i 1234567 \
+  -k abc123XYZyourAPIkeyhere \
+  -b ~/Library/Application\ Support/Zotero/better-bibtex.sqlite \
+  collection create "Reading/2024" paper.qmd --execute
+
+# For group libraries (shared Zotero groups), pass the group ID and --library-type
+zotc \
+  -i 9876543 \
+  -k abc123XYZyourAPIkeyhere \
+  -b ~/Library/Application\ Support/Zotero/better-bibtex.sqlite \
+  --library-type group \
+  collection create "SharedProject/References" paper.qmd --execute
+```
+
+```
+# ── Setup ──────────────────────────────────────────────────────────────────────
+
+# Store credentials globally so you don't need to pass them every time
+mkdir -p ~/.zotc
+echo "1234567"       > ~/.zotc/library   # your numeric Zotero user ID
+echo "your_api_key"  > ~/.zotc/api-key   # your Zotero API key
+
+# Alias for convenience in examples below
+BBT=~/Zotero/better-bibtex.sqlite
+
+
+# ── Inspect your BetterBibTeX citation key database ───────────────────────────
+
+# List all citation key → Zotero item key mappings (plaintext: one pair per line)
+zotc -b $BBT keys list
+
+# Same, as JSON (includes itemID, libraryID, pinned status)
+zotc -b $BBT keys list -t json
+
+# Export full mapping to CSV, sorted by item ID
+zotc -b $BBT keys list -t csv --sort item-id -o all-keys.csv
+
+
+# ── Extract citation keys from documents ──────────────────────────────────────
+# Resolves each key against the BBT database to get the Zotero item key.
+# Handles @key (Pandoc), [@key], [[path/@key]] (Obsidian), [text](@key.md) syntax.
+
+# From a Quarto/R Markdown document
+zotc -b $BBT keys extract paper.qmd
+
+# From a BibTeX file (reads @article{key, ...} entry headers)
+zotc -b $BBT keys extract references.bib
+
+# From a CSV file with a "citation-key" column
+zotc -b $BBT keys extract reading-list.csv
+
+# From a plaintext file (one key per line, # comments ignored)
+zotc -b $BBT keys extract keys.txt
+
+# From multiple files at once (deduplicates across all inputs)
+zotc -b $BBT keys extract intro.qmd methods.qmd discussion.qmd
+
+# From stdin (format must be specified explicitly with -f)
+cat keys.txt | zotc -b $BBT keys extract -f plaintext -
+
+# Keys only — just list what citation keys were found, skip BBT resolution
+# (does not require -b or any Zotero credentials)
+zotc keys extract --keys-only paper.qmd
+
+# Output resolved mappings as JSON (citation-key, itemKey, found: true/false)
+zotc -b $BBT keys extract paper.qmd -t json
+
+# Output as CSV, saved to file
+zotc -b $BBT keys extract paper.qmd -t csv -o resolved.csv
+
+
+# ── List and browse your Zotero collections ───────────────────────────────────
+
+# Show all collections as a nested directory-style tree
+zotc collection list
+
+# Filter tree to collections matching a regex pattern
+zotc collection list "Reading"
+zotc collection list "2024"
+
+# Full collection metadata as JSON (includes keys, item counts, parent keys)
+zotc collection list -t json
+
+# As CSV for spreadsheet use
+zotc collection list -t csv
+
+
+# ── Create a new collection from citation keys in a document ──────────────────
+# Extracts citation keys from input files, resolves them via BBT, creates the
+# collection via the Zotero API, and adds all resolved items to it.
+# Parent collections in the path are created automatically if they don't exist.
+# All operations are dry runs by default — pass --execute to apply.
+
+# Dry run: preview what would be created (safe default)
+zotc -b $BBT collection create "Reading/2024" paper.qmd
+
+# Execute: create the collection and populate it
+zotc -b $BBT collection create "Reading/2024" paper.qmd --execute
+
+# From a BibTeX file
+zotc -b $BBT collection create "Reading/2024" references.bib --execute
+
+# From a CSV reading list
+zotc -b $BBT collection create "Reading/2024" reading-list.csv --execute
+
+# From multiple source files (all keys merged and deduplicated)
+zotc -b $BBT collection create "Projects/MyPaper/References" \
+  intro.qmd methods.qmd discussion.qmd --execute
+
+# Control conflict behavior when the collection already exists:
+
+# Add the new items to the existing collection (keep what's already there)
+zotc -b $BBT collection create "Reading/2024" new.bib \
+  --on-conflict add --execute
+
+# Replace the existing collection's contents with the new input set
+zotc -b $BBT collection create "Reading/2024" new.bib \
+  --on-conflict replace --execute
+
+# Do nothing if the collection already exists, exit cleanly
+zotc -b $BBT collection create "Reading/2024" new.bib \
+  --on-conflict skip --execute
+
+# Auto-number to avoid the conflict: creates "Draft (2)", "Draft (3)", etc.
+zotc -b $BBT collection create "Draft" paper.qmd \
+  --on-conflict disambiguate --execute
+
+
+# ── Add items to an existing collection ───────────────────────────────────────
+# Adds items resolved from the input files without removing anything
+# already in the collection.
+
+zotc -b $BBT collection add "Reading/2024" new-papers.bib --execute
+zotc -b $BBT collection add "Reading/2024" extra.qmd --execute
+
+
+# ── Replace a collection's contents ───────────────────────────────────────────
+# Syncs the collection to exactly match the resolved input: adds what is
+# missing, removes what is no longer present, leaves the rest untouched.
+
+zotc -b $BBT collection replace "Reading/2024" curated.bib --execute
+zotc -b $BBT collection replace "Projects/MyPaper/References" paper.qmd --execute
+
+
+# ── Diff a collection against your input ──────────────────────────────────────
+# Shows what a replace would do — items only in input (+), only in the
+# collection (-), in both, and any unresolved citation keys (?).
+# Never modifies your library regardless of --execute.
+
+zotc -b $BBT collection diff "Reading/2024" curated.bib
+zotc -b $BBT collection diff "Projects/MyPaper/References" paper.qmd
+
+
+# ── Verbosity ─────────────────────────────────────────────────────────────────
+
+zotc -q   ...    # silent — no log output (only stdout results)
+zotc -v   ...    # warnings only (unresolved keys, empty inputs)
+zotc      ...    # info (default): progress, counts, dry-run summaries
+zotc -vvv ...    # debug: full API URLs, request bodies, SQL query results
+```
+
 ---
 
 ## Table of Contents
