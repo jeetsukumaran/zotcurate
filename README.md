@@ -12,7 +12,7 @@ Zotcurate is a command-line tool for creating, populating, and synchronizing Zot
 
 ### Why use Zotcurate?
 
-Zotcurate fills a major gap in Zotero workflows: there are many tools for getting references out of Zotero, into Obsidian via Zotero Integration, ZotLit or [Bibliosidian](https://github.com/jeetsukumaran/obsidian-bibliosidian) for example, but not much that goes the other way. The citations you actually used in a manuscript, the annotated bibliography or reading list you refined in Obsidian, the thematic grouping that emerged after months of note-taking: these are the intellectual output of working with your references, and they belong back in Zotero as proper collections. `zotc` is that return path. (See (Motivation)[MOTIVATION.md] for more details.)
+Zotcurate fills a major gap in Zotero workflows: there are many tools for getting references out of Zotero, into Obsidian via Zotero Integration, ZotLit or [Bibliosidian](https://github.com/jeetsukumaran/obsidian-bibliosidian) for example, but not much that goes the other way. The citations you actually used in a manuscript, the annotated bibliography or reading list you refined in Obsidian, the thematic grouping that emerged after months of note-taking: these are the intellectual output of working with your references, and they belong back in Zotero as proper collections. `zotc` is that return path. (See [Motivation](MOTIVATION.md) for more details.)
 
 ## Example usage
 
