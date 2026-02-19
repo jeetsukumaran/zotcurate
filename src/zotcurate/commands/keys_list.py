@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import argparse
 
-from zotcurator.betterbibtex import read_all_records
-from zotcurator.config import Config
-from zotcurator.formatters import format_records, resolve_output_format, write_output
-from zotcurator.log import get_logger
+from zotcurate.betterbibtex import read_all_records
+from zotcurate.config import Config
+from zotcurate.formatters import format_records, resolve_output_format, write_output
+from zotcurate.log import get_logger
 
 
 def register(subparsers: argparse._SubParsersAction) -> None:

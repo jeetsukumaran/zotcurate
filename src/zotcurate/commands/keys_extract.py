@@ -4,16 +4,16 @@ from __future__ import annotations
 
 import argparse
 
-from zotcurator.betterbibtex import resolve_citation_keys
-from zotcurator.config import Config
-from zotcurator.extractors import collect_keys_from_files
-from zotcurator.formatters import (
+from zotcurate.betterbibtex import resolve_citation_keys
+from zotcurate.config import Config
+from zotcurate.extractors import collect_keys_from_files
+from zotcurate.formatters import (
     format_key_mappings,
     format_plain_keys,
     resolve_output_format,
     write_output,
 )
-from zotcurator.log import get_logger
+from zotcurate.log import get_logger
 
 
 def register(subparsers: argparse._SubParsersAction) -> None:

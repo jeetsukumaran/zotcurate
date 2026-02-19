@@ -5,11 +5,11 @@ from __future__ import annotations
 import argparse
 import sys
 
-from zotcurator.betterbibtex import resolve_citation_keys
-from zotcurator.config import Config
-from zotcurator.extractors import collect_keys_from_files
-from zotcurator.log import get_logger
-from zotcurator.zotero_api import CollectionTree, ZoteroClient
+from zotcurate.betterbibtex import resolve_citation_keys
+from zotcurate.config import Config
+from zotcurate.extractors import collect_keys_from_files
+from zotcurate.log import get_logger
+from zotcurate.zotero_api import CollectionTree, ZoteroClient
 
 
 # ── Subcommand registration ──────────────────────────────────────────────────

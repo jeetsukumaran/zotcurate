@@ -8,9 +8,9 @@ import re
 import sys
 from typing import Optional
 
-from zotcurator.config import Config
-from zotcurator.log import get_logger
-from zotcurator.zotero_api import CollectionTree, ZoteroClient, ZoteroCollection
+from zotcurate.config import Config
+from zotcurate.log import get_logger
+from zotcurate.zotero_api import CollectionTree, ZoteroClient, ZoteroCollection
 
 
 def register(subparsers: argparse._SubParsersAction) -> None:

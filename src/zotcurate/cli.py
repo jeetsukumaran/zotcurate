@@ -5,8 +5,8 @@ from __future__ import annotations
 import argparse
 import sys
 
-from zotcurator.config import ConfigError, resolve_config
-from zotcurator.log import setup_logging
+from zotcurate.config import ConfigError, resolve_config
+from zotcurate.log import setup_logging
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -69,13 +69,17 @@ def build_parser() -> argparse.ArgumentParser:
     # collections_sub = collections_parser.add_subparsers(
     #     dest="collections_command", help="Collection subcommands"
     # )
-    # from zotcurator.commands.collections_list import (
+    # from zotcurate.commands.collections_list import (
     #     register as register_collections_list,
     # )
     #
     # register_collections_list(collections_sub)
 
 
+
+    # zotc config
+    from zotcurate.commands.config import register as register_config
+    register_config(subparsers)
 
     # zotc collection ...
     collection_parser = subparsers.add_parser(
@@ -84,10 +88,10 @@ def build_parser() -> argparse.ArgumentParser:
     collection_sub = collection_parser.add_subparsers(
         dest="collection_command", help="Collection management subcommands"
     )
-    from zotcurator.commands.collections_list import (
+    from zotcurate.commands.collections_list import (
         register as register_collections_list,
     )
-    from zotcurator.commands.collection_manage import (
+    from zotcurate.commands.collection_manage import (
         register_add,
         register_create,
         register_diff,
@@ -105,8 +109,8 @@ def build_parser() -> argparse.ArgumentParser:
     keys_sub = keys_parser.add_subparsers(
         dest="keys_command", help="Key subcommands"
     )
-    from zotcurator.commands.keys_extract import register as register_keys_extract
-    from zotcurator.commands.keys_list import register as register_keys_list
+    from zotcurate.commands.keys_extract import register as register_keys_extract
+    from zotcurate.commands.keys_list import register as register_keys_list
 
     register_keys_extract(keys_sub)
     register_keys_list(keys_sub)

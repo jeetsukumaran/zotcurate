@@ -13,7 +13,7 @@ import urllib.request
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from zotcurator.log import get_logger
+from zotcurate.log import get_logger
 
 BASE_URL = "https://api.zotero.org"
 

@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from zotcurator.log import get_logger
+from zotcurate.log import get_logger
 
 # ── Format detection ──────────────────────────────────────────────────────────
 

@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import Optional, Sequence
 
-from zotcurator.betterbibtex import CitationKeyRecord, KeyMapping
+from zotcurate.betterbibtex import CitationKeyRecord, KeyMapping
 
 # ── Format detection ──────────────────────────────────────────────────────────
 

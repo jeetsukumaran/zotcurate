@@ -75,11 +75,15 @@ def resolve_config(
     cli_library_type: Optional[str] = None,
     cli_betterbibtex: Optional[str] = None,
 ) -> Config:
-    """Resolve configuration from CLI args > env vars > config files > defaults."""
+    """Resolve configuration from CLI args > env vars > config files > auto-detection > defaults."""
+    from zotcurate.detect import detect_defaults
+    detected = detect_defaults()
+
     library_id = (
         cli_library_id
         or os.environ.get(ENV_LIBRARY_ID)
         or _read_config_file("library")
+        or detected["library_id"]
     )
     api_key = (
         cli_api_key
@@ -95,6 +99,8 @@ def resolve_config(
     betterbibtex_db: Optional[Path] = None
     if cli_betterbibtex:
         betterbibtex_db = Path(cli_betterbibtex).expanduser().resolve()
+    elif detected["betterbibtex"]:
+        betterbibtex_db = Path(detected["betterbibtex"])
 
     return Config(
         library_id=library_id,
