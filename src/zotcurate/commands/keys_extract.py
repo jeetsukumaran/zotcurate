@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 
-from zotcurate.betterbibtex import resolve_citation_keys
+from zotcurate.zotero_db import resolve_citation_keys
 from zotcurate.config import Config
 from zotcurate.extractors import collect_keys_from_files
 from zotcurate.formatters import (
@@ -90,7 +90,7 @@ def run(args: argparse.Namespace, config: Config) -> int:
 
     fmt = resolve_output_format(args.output, args.to_format, default="plaintext")
 
-    # Keys-only mode: skip BetterBibTeX resolution
+    # Keys-only mode: skip Zotero database resolution
     if args.keys_only:
         output = format_plain_keys(
             keys,
@@ -102,8 +102,8 @@ def run(args: argparse.Namespace, config: Config) -> int:
         logger.info("Extracted %d citation keys (keys-only mode)", len(keys))
         return 0
 
-    # Resolve via BetterBibTeX
-    db_path = config.require_betterbibtex_db()
+    # Resolve via Zotero database
+    db_path = config.require_zotero_db()
     mappings = resolve_citation_keys(db_path, keys)
 
     resolved = sum(1 for m in mappings if m.found)

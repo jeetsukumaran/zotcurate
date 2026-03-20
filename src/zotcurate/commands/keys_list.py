@@ -1,10 +1,10 @@
-"""``zotc keys list`` — Dump all BetterBibTeX citation key records."""
+"""``zotc keys list`` — Dump all Zotero citation key records."""
 
 from __future__ import annotations
 
 import argparse
 
-from zotcurate.betterbibtex import read_all_records
+from zotcurate.zotero_db import read_all_records
 from zotcurate.config import Config
 from zotcurate.formatters import format_records, resolve_output_format, write_output
 from zotcurate.log import get_logger
@@ -13,7 +13,7 @@ from zotcurate.log import get_logger
 def register(subparsers: argparse._SubParsersAction) -> None:
     """Register the ``keys list`` subcommand."""
     parser = subparsers.add_parser(
-        "list", help="List all BetterBibTeX citation key records"
+        "list", help="List all Zotero citation key records"
     )
     parser.add_argument(
         "-t",
@@ -40,11 +40,11 @@ def register(subparsers: argparse._SubParsersAction) -> None:
 def run(args: argparse.Namespace, config: Config) -> int:
     """Execute the keys list command."""
     logger = get_logger()
-    db_path = config.require_betterbibtex_db()
+    db_path = config.require_zotero_db()
     records = read_all_records(db_path)
 
     if not records:
-        logger.info("No records found in BetterBibTeX database.")
+        logger.info("No citation key records found in Zotero database.")
         return 0
 
     sort_key_map = {

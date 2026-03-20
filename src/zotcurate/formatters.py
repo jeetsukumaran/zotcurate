@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import Optional, Sequence
 
-from zotcurate.betterbibtex import CitationKeyRecord, KeyMapping
+from zotcurate.zotero_db import CitationKeyRecord, KeyMapping
 
 # ── Format detection ──────────────────────────────────────────────────────────
 
@@ -135,7 +135,7 @@ def format_records(
     *,
     delimiter: str = ",",
 ) -> str:
-    """Format full BBT records for output."""
+    """Format full citation key records for output."""
     fmt_lower = fmt.lower()
     if fmt_lower == "json":
         return json.dumps([r.to_dict() for r in records], indent=2)
@@ -143,10 +143,10 @@ def format_records(
         delim = "\t" if fmt_lower == "tsv" else delimiter
         buf = io.StringIO()
         writer = csv.writer(buf, delimiter=delim)
-        writer.writerow(["citationKey", "itemKey", "itemID", "libraryID", "pinned"])
+        writer.writerow(["citationKey", "itemKey", "itemID", "libraryID"])
         for r in records:
             writer.writerow(
-                [r.citation_key, r.item_key, r.item_id, r.library_id, r.pinned]
+                [r.citation_key, r.item_key, r.item_id, r.library_id]
             )
         return buf.getvalue().rstrip("\r\n")
     elif fmt_lower == "yaml":
@@ -156,7 +156,6 @@ def format_records(
             lines.append(f"  itemKey: {r.item_key}")
             lines.append(f"  itemID: {r.item_id}")
             lines.append(f"  libraryID: {r.library_id}")
-            lines.append(f"  pinned: {str(r.pinned).lower()}")
         return "\n".join(lines)
     elif fmt_lower == "plaintext":
         return "\n".join(f"{r.citation_key}\t{r.item_key}" for r in records)

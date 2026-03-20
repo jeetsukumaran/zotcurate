@@ -37,12 +37,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Library type (default: user)",
     )
     parser.add_argument(
-        "-b",
-        "--bb",
-        "--better-bibtex",
-        dest="betterbibtex",
+        "-z",
+        "--zotero-db",
+        dest="zotero_db",
         default=None,
-        help="Path to BetterBibTeX SQLite database",
+        help="Path to Zotero SQLite database (zotero.sqlite)",
     )
     parser.add_argument(
         "-q",
@@ -138,7 +137,7 @@ def main(argv: list[str] | None = None) -> int:
         cli_library_id=args.library_id,
         cli_api_key=args.api_key,
         cli_library_type=args.library_type,
-        cli_betterbibtex=args.betterbibtex,
+        cli_zotero_db=args.zotero_db,
     )
 
     if args.command is None:

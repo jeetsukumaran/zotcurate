@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 
-from zotcurate.betterbibtex import resolve_citation_keys
+from zotcurate.zotero_db import resolve_citation_keys
 from zotcurate.config import Config
 from zotcurate.extractors import collect_keys_from_files
 from zotcurate.log import get_logger
@@ -112,7 +112,7 @@ def _resolve_input_keys(
         logger.warning("No citation keys found in input.")
         return [], []
 
-    db_path = config.require_betterbibtex_db()
+    db_path = config.require_zotero_db()
     mappings = resolve_citation_keys(db_path, keys)
 
     item_keys = [m.item_key for m in mappings if m.found and m.item_key]

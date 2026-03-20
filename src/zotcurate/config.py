@@ -20,7 +20,7 @@ class Config:
     library_id: Optional[str]
     api_key: Optional[str]
     library_type: str
-    betterbibtex_db: Optional[Path]
+    zotero_db: Optional[Path]
 
     def require_library_id(self) -> str:
         if self.library_id is None:
@@ -38,15 +38,15 @@ class Config:
             )
         return self.api_key
 
-    def require_betterbibtex_db(self) -> Path:
-        if self.betterbibtex_db is None:
+    def require_zotero_db(self) -> Path:
+        if self.zotero_db is None:
             raise ConfigError(
-                "BetterBibTeX database path required. "
-                "Provide via -b/--better-bibtex."
+                "Zotero database path required. "
+                "Provide via -z/--zotero-db."
             )
-        db = self.betterbibtex_db
+        db = self.zotero_db
         if not db.exists():
-            raise ConfigError(f"BetterBibTeX database not found: {db}")
+            raise ConfigError(f"Zotero database not found: {db}")
         return db
 
 
@@ -73,7 +73,7 @@ def resolve_config(
     cli_library_id: Optional[str] = None,
     cli_api_key: Optional[str] = None,
     cli_library_type: Optional[str] = None,
-    cli_betterbibtex: Optional[str] = None,
+    cli_zotero_db: Optional[str] = None,
 ) -> Config:
     """Resolve configuration from CLI args > env vars > config files > auto-detection > defaults."""
     from zotcurate.detect import detect_defaults
@@ -96,15 +96,15 @@ def resolve_config(
         or _read_config_file("library-type")
         or "user"
     )
-    betterbibtex_db: Optional[Path] = None
-    if cli_betterbibtex:
-        betterbibtex_db = Path(cli_betterbibtex).expanduser().resolve()
-    elif detected["betterbibtex"]:
-        betterbibtex_db = Path(detected["betterbibtex"])
+    zotero_db: Optional[Path] = None
+    if cli_zotero_db:
+        zotero_db = Path(cli_zotero_db).expanduser().resolve()
+    elif detected["zotero_db"]:
+        zotero_db = Path(detected["zotero_db"])
 
     return Config(
         library_id=library_id,
         api_key=api_key,
         library_type=library_type,
-        betterbibtex_db=betterbibtex_db,
+        zotero_db=zotero_db,
     )

@@ -3,8 +3,8 @@
 Reads the Zotero data directory and SQLite databases to surface
 values that would otherwise need to be supplied manually:
 
-  - BetterBibTeX database path  (from OS default / prefs.js)
-  - Zotero library ID           (from zotero.sqlite settings table)
+  - Zotero database path  (zotero.sqlite, from OS default / prefs.js)
+  - Zotero library ID     (from zotero.sqlite settings table)
 
 The API key cannot be auto-detected and must always be supplied
 by the user.
@@ -101,10 +101,10 @@ def _read_pref(prefs_js: Path, key: str) -> Optional[str]:
     return m.group(1) if m else None
 
 
-# ── BetterBibTeX database ─────────────────────────────────────────────────────
+# ── Zotero database ───────────────────────────────────────────────────────────
 
-def find_betterbibtex_db(data_dir: Optional[Path] = None) -> Optional[Path]:
-    """Find the BetterBibTeX SQLite database.
+def find_zotero_db(data_dir: Optional[Path] = None) -> Optional[Path]:
+    """Find the Zotero SQLite database (zotero.sqlite).
 
     Looks in the provided data_dir, or falls back to auto-detecting
     the Zotero data directory.
@@ -113,7 +113,7 @@ def find_betterbibtex_db(data_dir: Optional[Path] = None) -> Optional[Path]:
         data_dir = find_zotero_data_dir()
     if data_dir is None:
         return None
-    candidate = data_dir / "better-bibtex.sqlite"
+    candidate = data_dir / "zotero.sqlite"
     return candidate if candidate.exists() else None
 
 
@@ -158,18 +158,18 @@ def detect_defaults() -> dict[str, Optional[str]]:
     """Auto-detect all available configuration values.
 
     Returns a dict with keys:
-        data_dir       - Zotero data directory path (str)
-        betterbibtex   - BetterBibTeX database path (str)
-        library_id     - Zotero web user ID (str)
+        data_dir   - Zotero data directory path (str)
+        zotero_db  - Zotero SQLite database path (str)
+        library_id - Zotero web user ID (str)
 
     All values may be None if detection fails.
     """
     data_dir = find_zotero_data_dir()
-    bbt = find_betterbibtex_db(data_dir)
+    zotero_db = find_zotero_db(data_dir)
     library_id = find_library_id(data_dir)
 
     return {
         "data_dir": str(data_dir) if data_dir else None,
-        "betterbibtex": str(bbt) if bbt else None,
+        "zotero_db": str(zotero_db) if zotero_db else None,
         "library_id": library_id,
     }

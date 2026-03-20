@@ -34,9 +34,9 @@ def run(args: argparse.Namespace, config: Config) -> int:
         ("Library ID",         _source(config.library_id,  detected["library_id"])),
         ("API key",            ("(set)" if config.api_key else "(not set)")),
         ("Library type",       config.library_type),
-        ("BetterBibTeX DB",    _source(
-                                    str(config.betterbibtex_db) if config.betterbibtex_db else None,
-                                    detected["betterbibtex"],
+        ("Zotero DB",          _source(
+                                    str(config.zotero_db) if config.zotero_db else None,
+                                    detected["zotero_db"],
                                 )),
         ("Zotero data dir",    detected["data_dir"] or "(not found)"),
     ]
